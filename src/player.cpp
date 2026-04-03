@@ -1,7 +1,5 @@
 #include "player.hpp"
 
-#include <QBrush>
-
 Player::Player(QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), velocityY(0), onGround(false) {
   setPixmap(QPixmap("assets/player.png"));
