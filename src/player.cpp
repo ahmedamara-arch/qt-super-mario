@@ -1,8 +1,4 @@
 #include "player.hpp"
-<<<<<<< HEAD
-#include <QBrush>
-=======
->>>>>>> origin/feature/add-player-image
 
 Player::Player(QGraphicsItem* parent)
     : QObject(), QGraphicsPixmapItem(parent), velocityY(0), onGround(false) {
@@ -13,18 +9,25 @@ Player::Player(QGraphicsItem* parent)
 }
 
 void Player::keyPressEvent(QKeyEvent* event) {
-  if (event->key() == Qt::Key_Left) {
-    moveBy(-10, 0);
-  }
-  if (event->key() == Qt::Key_Right) {
-    moveBy(10, 0);
-  }
+  keysHeld.insert(event->key());
   if (event->key() == Qt::Key_Space && onGround) {
     velocityY = -15;
   }
 }
 
+void Player::keyReleaseEvent(QKeyEvent* event) {
+  keysHeld.remove(event->key());
+}
+
 void Player::updateState() {
+  // Handle held keys every frame
+  if (keysHeld.contains(Qt::Key_Left)) {
+    moveBy(-10, 0);
+  }
+  if (keysHeld.contains(Qt::Key_Right)) {
+    moveBy(10, 0);
+  }
+
   velocityY += 1;
   onGround = false;
   moveBy(0, velocityY);
@@ -34,7 +37,6 @@ void Player::updateState() {
   for (QGraphicsItem* item : items) {
     double platformTop = item->y();
     double playerBottom = y() + boundingRect().height();
-
     if (velocityY >= 0 && playerBottom <= platformTop + velocityY + 5) {
       setY(platformTop - boundingRect().height());
       velocityY = 0;
