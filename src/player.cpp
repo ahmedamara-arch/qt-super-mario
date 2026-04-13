@@ -1,5 +1,4 @@
 #include "player.hpp"
-
 #include <QBrush>
 
 Player::Player(QGraphicsItem* parent)
@@ -7,7 +6,6 @@ Player::Player(QGraphicsItem* parent)
   setRect(0, 0, 30, 60);
   setBrush(Qt::red);
   setPos(300, 0);
-
   setFlag(QGraphicsItem::ItemIsFocusable);
   setFocus();
 }
@@ -31,11 +29,15 @@ void Player::updateState() {
 
   QList<QGraphicsItem*> items = collidingItems();
 
-  if (items.size() != 0) {
-    QGraphicsItem* item = items[0];
-    setY(item->y() - boundingRect().height());
+  for (QGraphicsItem* item : items) {
+    double platformTop = item->y();
+    double playerBottom = y() + boundingRect().height();
 
-    velocityY = 0;
-    onGround = true;
+    if (velocityY >= 0 && playerBottom <= platformTop + velocityY + 5) {
+      setY(platformTop - boundingRect().height());
+      velocityY = 0;
+      onGround = true;
+      break;
+    }
   }
 }
